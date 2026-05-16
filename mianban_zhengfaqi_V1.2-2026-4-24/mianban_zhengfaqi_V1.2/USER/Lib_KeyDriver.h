@@ -57,7 +57,7 @@ typedef enum
 #define PRESSED_600mS 0x80 // 300mS长按
 
 //---------------状态时间定义,与状态一致--------------
-#define KEY_DELAY_TIME 1		  // 5*10ms
+#define KEY_DELAY_TIME 0		  // 5*10ms
 #define KEY_SHORT_TIME 90		  // 释放有效时间 80*10ms
 #define KEY_PRESS_TIME_600mS 20	  // 60*10ms
 #define KEY_PRESS_TIME_1000mS 100 // 100*10ms
