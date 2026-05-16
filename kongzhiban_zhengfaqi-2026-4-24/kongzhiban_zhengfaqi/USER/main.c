@@ -307,12 +307,7 @@ void f_CalTm(void)
 				MchInf.AudioTaskTarget = MchInf.AudioQueue[MchInf.AudioQueueHead];
 				MchInf.AudioQueueHead = (MchInf.AudioQueueHead + 1) & 0x07;
 
-				if (MchInf.AudioTaskTarget == MchInf.AudioCurrentTrack)
-				{
-					MchInf.bflagbleset = 0;
-					MchInf.bflagTF = 0;
-				}
-				else if (MchInf.AudioTaskTarget == 0)
+				if (MchInf.AudioTaskTarget == 0)
 				{
 					if (MchInf.AudioCurrentTrack == 0)
 					{

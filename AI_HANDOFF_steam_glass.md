@@ -524,3 +524,29 @@ else
   - 面板 Keil 编译通过：`0 Error(s), 12 Warning(s)`。
   - 控制板 Keil 编译通过：`0 Error(s), 36 Warning(s)`。
   - 本次无编译错误；warning 仍为项目原有未使用变量、隐式声明、文件末尾换行等类型。
+## 2026-05-16：继续排查音轨切换错乱，严格化控制板音轨调度
+
+- 用户反馈：拆分播放状态与蓝牙状态后，音轨切换仍然错乱；要求检查或通过断点调试追踪变量确认原因。
+- 静态追踪变量：
+  - 面板 B1 长按切换时会更新 `ModeRunState`，并通过 `blekey` 的 `0x80/0x200/0x400/0x800` 事件通知控制板。
+  - 控制板接收后写入 `ModeRunState`，再调用 `f_audio_queue_push()` 推入 `AudioTaskTarget`。
+  - 控制板音轨状态机依赖 `AudioCurrentTrack`、`AudioTaskStep`、`AudioTaskTarget` 和队列头尾推进。
+- 新根因判断：
+  - 旧逻辑在 `f_audio_queue_push()` 中遇到 `AudioCurrentTrack == mode` 会直接丢弃命令。
+  - 但 `AudioCurrentTrack` 不一定等于音频模块真实状态，尤其是前面存在超时兜底、快速连续切换或模块未及时 OK 时；因此“记录值相同”会误吞本应执行的音轨切换。
+  - 控制板原来按 `rxBlekey` 的 bit 优先级判断目标音轨，如果同一发送周期内多个音轨 bit 被累积，可能选择旧 bit，而不是面板当前最新 `ModeRunState`。
+- 修改板子：控制板。
+- 修改文件：
+  - `kongzhiban_zhengfaqi-2026-4-24\kongzhiban_zhengfaqi\USER\Uart.c`
+  - `kongzhiban_zhengfaqi-2026-4-24\kongzhiban_zhengfaqi\USER\main.c`
+- 修改内容：
+  - `f_audio_queue_push()` 去掉 `AudioCurrentTrack == mode` 的提前返回，避免因软件记录值不可靠而吞掉切换命令。
+  - 控制板收到 `0x80/0x200/0x400/0x800` 任一音轨事件后，不再按 bit 优先级映射目标，而是直接用同一帧中的 `rxMode / ModeRunState` 作为最终目标。
+  - 状态机启动任务时去掉 `AudioTaskTarget == AudioCurrentTrack` 的直接完成路径，让每次面板发出的音轨切换都进入执行流程。
+- 预期效果：
+  - 快速切换或前一次状态记录不准时，控制板仍以面板当前颜色/模式为准，严格执行一次切换。
+  - 避免“记录当前音轨相同，但模块实际没切过去”时命令被丢弃。
+- 验证：
+  - 控制板 Keil 编译通过：`0 Error(s), 60 Warning(s)`。
+  - 面板 Keil 编译通过：`0 Error(s), 34 Warning(s)`。
+  - 本次实际逻辑改动只在控制板；面板只是参与编译确认协议兼容。

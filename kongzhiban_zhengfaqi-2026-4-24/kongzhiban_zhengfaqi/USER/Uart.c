@@ -120,9 +120,6 @@ static void f_audio_queue_push(unsigned char mode)
 {
 	unsigned char last = 0;
 
-	if (MchInf.AudioCurrentTrack == mode)
-		return;
-
 	if (MchInf.AudioTaskStep != AUDIO_STEP_IDLE)
 	{
 		if (MchInf.AudioTaskTarget == mode)
@@ -179,21 +176,10 @@ void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 			MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 			MchInf.AudioTaskTarget = 0;
 		}
-		else if (rxBlekey & 0x80)
+		else if (rxBlekey & (0x80 | 0x200 | 0x400 | 0x800))
 		{
-			f_audio_queue_push(0);
-		}
-		else if (rxBlekey & 0x200)
-		{
-			f_audio_queue_push(1);
-		}
-		else if (rxBlekey & 0x400)
-		{
-			f_audio_queue_push(2);
-		}
-		else if (rxBlekey & 0x800)
-		{
-			f_audio_queue_push(3);
+			if (rxMode <= 3)
+				f_audio_queue_push(rxMode);
 		}
 		MchInf.bFlagRce = 1;
 	}
