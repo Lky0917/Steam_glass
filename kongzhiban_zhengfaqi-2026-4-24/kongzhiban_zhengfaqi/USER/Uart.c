@@ -121,7 +121,10 @@ static void f_audio_queue_push(unsigned char mode)
 	if (MchInf.AudioTaskStep != AUDIO_STEP_IDLE)
 	{
 		if (MchInf.AudioTaskTarget == mode)
+		{
+			f_audio_queue_clear();
 			return;
+		}
 
 		f_audio_queue_clear();
 		MchInf.AudioQueue[0] = mode;

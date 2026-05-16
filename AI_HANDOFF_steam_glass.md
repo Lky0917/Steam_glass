@@ -645,3 +645,17 @@ else
 - 风险说明：
   - 灵敏度更高后，如果触摸芯片本身存在抖动/误触，软件侧更容易响应；如实机出现误触，可回退为 `KEY_DELAY_TIME=1` 或需要进一步调整触摸芯片固件/寄存器阈值。
 - 验证：面板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。
+## 2026-05-16：修正音频切换队列残留导致的目标冲突
+
+- 用户反馈：切换音频时仍有一些问题，要求重新检查面板端和控制板端逻辑是否冲突。
+- 排查结论：
+  - 面板 B1 长按切换时，`ModeRunState` 按 `0->1->2->3->0` 循环，并通过 `blekey` 发送 `0x80/0x200/0x400/0x800` 给控制板。
+  - 控制板收到音轨切换事件后，用同一帧中的 `rxMode` 作为目标音轨，并进入 `f_audio_queue_push()`。
+  - 原 `f_audio_queue_push()` 在音频任务执行中遇到 `AudioTaskTarget == mode` 时直接 `return`。
+  - 问题是直接 `return` 前没有清空已经排队的旧目标；快速循环切换时可能出现“当前执行目标已经等于最新面板目标，但队列里还残留上一次白灯/蓝灯/紫灯目标”，当前任务完成后残留目标继续执行，造成错轨或延迟切换。
+- 修改板子：控制板。
+- 修改文件：`kongzhiban_zhengfaqi-2026-4-24\kongzhiban_zhengfaqi\USER\Uart.c`。
+- 修改内容：
+  - 在 `f_audio_queue_push()` 中，当 `AudioTaskStep != AUDIO_STEP_IDLE` 且 `AudioTaskTarget == mode` 时，先调用 `f_audio_queue_clear()` 清空旧队列，再返回。
+  - 这样最新面板目标与当前执行目标一致时，不会再执行过期的排队目标。
+- 验证：控制板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。
