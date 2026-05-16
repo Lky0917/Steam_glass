@@ -62,6 +62,7 @@ typedef struct
 	unsigned char bflagbleset;// audio main flow state
 	unsigned char bflagTF;// TF sub flow type/state
 	unsigned char bflagBleConnState;//蓝牙连接状态
+	unsigned char MusicPlayState;//music play state: 0 paused/stopped, 1 playing
 	unsigned char bflagBLEReset    :1;//重启
 	unsigned char AckOkStep;// 1  完成
 	unsigned char AudioQueue[8];

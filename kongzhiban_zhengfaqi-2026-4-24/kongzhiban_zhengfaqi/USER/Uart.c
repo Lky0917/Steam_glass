@@ -90,7 +90,7 @@ void f_SendDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.Temper[1] & 0xff;
 	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.bErrorTemper;
 	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.BleCMDState;
-	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.bFlagRce;
+	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.MusicPlayState;
 	UartInf->TxBuffer[UartInf->LensSendData++] = MchInf.bflagBleConnState;
 
 	MchInf_Send.CheckSum = 0;
@@ -215,7 +215,7 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 			{
 				MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 				MchInf.AudioCurrentTrack = MchInf.AudioTaskTarget;
-				MchInf.bflagBleConnState = 2;
+				MchInf.MusicPlayState = 1;
 				MchInf.bflagbleset = 0;
 				MchInf.bflagTF = 0;
 			}
@@ -227,7 +227,7 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 			{
 				MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 				MchInf.AudioCurrentTrack = 0;
-				MchInf.bflagBleConnState = 1;
+				MchInf.MusicPlayState = 0;
 				MchInf.bflagbleset = 0;
 				MchInf.bflagTF = 0;
 			}
@@ -235,18 +235,33 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 		else if ((UartInf->RxBufferTemp[0] == 'T') && (UartInf->RxBufferTemp[1] == 'S'))
 		{
 			if (UartInf->RxBufferTemp[4] == '0')
+			{
 				MchInf.bflagBleConnState = 0; // 未连接成功
+				MchInf.MusicPlayState = 0;
+			}
 			else if (UartInf->RxBufferTemp[4] == '1')
+			{
 				MchInf.bflagBleConnState = 1; // 已连接成功但未播放音乐
+				MchInf.MusicPlayState = 0;
+			}
 			else if (UartInf->RxBufferTemp[4] == '2')
+			{
 				MchInf.bflagBleConnState = 2; // 正在播放音乐
+				MchInf.MusicPlayState = 1;
+			}
 		}
 		else if ((UartInf->RxBufferTemp[0] == 'T') && (UartInf->RxBufferTemp[1] == 'L'))
 		{
 			if ((UartInf->RxBufferTemp[4] == '0') || (UartInf->RxBufferTemp[4] == '1'))
+			{
 				MchInf.bflagBleConnState = 0; // 未连接成功
+				MchInf.MusicPlayState = 0;
+			}
 			else if (UartInf->RxBufferTemp[4] == '3')
+			{
 				MchInf.bflagBleConnState = 1; // 已连接成功但未播放音乐
+				MchInf.MusicPlayState = 0;
+			}
 											  //			else 	if(UartInf->RxBufferTemp[4] == '2')
 											  //				MchInf.bflagBleConnState = 2;//正在播放音乐
 		}

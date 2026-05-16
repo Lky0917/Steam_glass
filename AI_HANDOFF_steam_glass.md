@@ -504,3 +504,23 @@ else
   - 面板 Keil 编译通过：`0 Error(s), 9 Warning(s)`。
   - 控制板 Keil 编译通过：`0 Error(s), 36 Warning(s)`。
   - 现有 warning 为项目原有未使用变量、隐式声明、文件末尾换行等类型；本次无编译错误。
+## 2026-05-16：拆分播放状态和蓝牙状态，避免 Key7 修复影响音轨切换
+
+- 用户反馈：播放/暂停修复后正常，但切换音轨又异常；要求确保两套逻辑不能冲突。
+- 根因确认：上一版将 `bflagBleConnState` 同时用作蓝牙连接/外部播放状态和 TF 音轨播放/暂停状态。控制板音轨切换流程中原本用 `bflagBleConnState > 0` 判断是否需要先断开蓝牙，这个变量被 TF 播放状态写成 `2` 后，会误导音轨切换状态机。
+- 新分工：
+  - `bflagBleConnState`：只表示蓝牙状态，继续按模块 `TS/TL` 回包维护，供蓝牙连接、断开、TF 切换前置判断使用。
+  - `MusicPlayState`：新增独立状态，只表示当前音频是否播放，`0` 为暂停/停止，`1` 为播放。
+  - 面板 `MusicOn`：只作为显示缓存，由控制板回包中的 `MusicPlayState` 同步。
+- 控制板修改：
+  - `USER\HeadInclude.h`：新增 `MchInf.MusicPlayState`。
+  - `USER\Uart.c`：控制板回包第 7 字节由原 `bFlagRce` 改为 `MusicPlayState`，第 8 字节仍为 `bflagBleConnState`。
+  - `USER\Uart.c` 和 `USER\main.c`：TF 音轨切换完成、白灯/蓝牙模式切换完成、Key7 播放/暂停、关机停止时只更新 `MusicPlayState`，不再改写 `bflagBleConnState`。
+  - `TS/TL` 蓝牙状态回包仍维护 `bflagBleConnState`，并同步外部蓝牙播放时的 `MusicPlayState`。
+- 面板修改：
+  - `USER\HeadInclude.h`：新增 `MusicPlayState` 字段。
+  - `USER\Uart.c`：从控制板回包第 7 字节读取 `MusicPlayState`，再同步到 `MusicOn` 驱动灯显示；`bflagBleConnState` 继续从第 8 字节读取。
+- 验证：
+  - 面板 Keil 编译通过：`0 Error(s), 12 Warning(s)`。
+  - 控制板 Keil 编译通过：`0 Error(s), 36 Warning(s)`。
+  - 本次无编译错误；warning 仍为项目原有未使用变量、隐式声明、文件末尾换行等类型。

@@ -133,7 +133,7 @@ void f_CalTm(void)
 				else if (MchInf.AudioTaskStep == AUDIO_STEP_TF_WAIT_AB_OK)
 				{
 					MchInf.AudioCurrentTrack = MchInf.AudioTaskTarget;
-					MchInf.bflagBleConnState = 2;
+					MchInf.MusicPlayState = 1;
 					MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 					MchInf.bflagbleset = 0;
 					MchInf.bflagTF = 0;
@@ -143,7 +143,7 @@ void f_CalTm(void)
 				else if (MchInf.AudioTaskStep == AUDIO_STEP_WHITE_WAIT_CM01_OK)
 				{
 					MchInf.AudioCurrentTrack = 0;
-					MchInf.bflagBleConnState = 1;
+					MchInf.MusicPlayState = 0;
 					MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 					MchInf.bflagbleset = 0;
 					MchInf.bflagTF = 0;
@@ -240,10 +240,10 @@ void f_CalTm(void)
 			memcpy(Uart1_Inf.TxBuffer, "AT+CB\r\n", Uart1_Inf.LensSendData);
 			f_SendDeal_1(&Uart1_Inf, USART1);
 
-			if (MchInf.bflagBleConnState == 2)
-				MchInf.bflagBleConnState = 1;
+			if (MchInf.MusicPlayState)
+				MchInf.MusicPlayState = 0;
 			else
-				MchInf.bflagBleConnState = 2;
+				MchInf.MusicPlayState = 1;
 		}
 
 		else if (MchInf.Blekey & 0x02) // xiayiqu
@@ -280,6 +280,7 @@ void f_CalTm(void)
 			MchInf.bflagBLEReset = 0;
 			MchInf.AudioCurrentTrack = 0;
 			MchInf.AudioTaskTarget = 0;
+			MchInf.MusicPlayState = 0;
 			MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 		}
 

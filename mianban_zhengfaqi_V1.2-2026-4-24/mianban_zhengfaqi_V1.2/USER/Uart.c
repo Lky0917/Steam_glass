@@ -130,8 +130,9 @@ void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 		MchInf.TmprHouse = UartInf->RxBufferTemp[4]; // ÊÒÎÂ
 		MchInf.bErrorTmpr = UartInf->RxBufferTemp[5];
 		MchInf.BleCMDState = UartInf->RxBufferTemp[6];
+		MchInf.MusicPlayState = UartInf->RxBufferTemp[7];
 		MchInf.bflagBleConnState = UartInf->RxBufferTemp[8]; // À¶ÑÀ×´Ì¬
-		MchInf.MusicOn = (MchInf.bflagBleConnState == 2) ? 1 : 0;
+		MchInf.MusicOn = MchInf.MusicPlayState ? 1 : 0;
 
 
 		if (MchInf.WaterLV & 0x20)

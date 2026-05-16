@@ -162,6 +162,7 @@ typedef struct
 	unsigned int  calAlamChugouAgain;//闪烁
 	unsigned int  ntimeslightAlamChugouAgain;//闪烁次数
 	unsigned char bflagBleConnState;//����״̬
+	unsigned char MusicPlayState;//music play state from control board
 unsigned int  timePumpchugouye;	
 unsigned char bErrorTmpr;
 unsigned char bFunWeixiu							:1;//ά��
