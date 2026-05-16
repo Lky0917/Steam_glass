@@ -1,0 +1,250 @@
+version: "4.1"
+name: muban_STM32
+type: ARM
+deviceName: null
+packDir: null
+srcDirs: []
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders:
+    - name: CMSIS
+      files:
+        - path: ../CMSIS/CM3/CoreSupport/core_cm3.c
+        - path: ../CMSIS/CM3/CoreSupport/core_cm3.h
+        - path: ../CMSIS/CM3/DeviceSupport/system_stm32f10x.c
+        - path: ../CMSIS/CM3/DeviceSupport/system_stm32f10x.h
+        - path: ../CMSIS/CM3/DeviceSupport/stm32f10x.h
+        - path: ../CMSIS/CM3/DeviceSupport/startup/arm/startup_stm32f10x_hd.s
+      folders: []
+    - name: FWlib
+      files:
+        - path: ../FWlib/inc/misc.h
+        - path: ../FWlib/inc/stm32f10x_adc.h
+        - path: ../FWlib/inc/stm32f10x_bkp.h
+        - path: ../FWlib/inc/stm32f10x_can.h
+        - path: ../FWlib/inc/stm32f10x_cec.h
+        - path: ../FWlib/inc/stm32f10x_crc.h
+        - path: ../FWlib/inc/stm32f10x_dac.h
+        - path: ../FWlib/inc/stm32f10x_dbgmcu.h
+        - path: ../FWlib/inc/stm32f10x_dma.h
+        - path: ../FWlib/inc/stm32f10x_exti.h
+        - path: ../FWlib/inc/stm32f10x_flash.h
+        - path: ../FWlib/inc/stm32f10x_fsmc.h
+        - path: ../FWlib/inc/stm32f10x_gpio.h
+        - path: ../FWlib/inc/stm32f10x_i2c.h
+        - path: ../FWlib/inc/stm32f10x_iwdg.h
+        - path: ../FWlib/inc/stm32f10x_pwr.h
+        - path: ../FWlib/inc/stm32f10x_rcc.h
+        - path: ../FWlib/inc/stm32f10x_rtc.h
+        - path: ../FWlib/inc/stm32f10x_sdio.h
+        - path: ../FWlib/inc/stm32f10x_spi.h
+        - path: ../FWlib/inc/stm32f10x_tim.h
+        - path: ../FWlib/inc/stm32f10x_usart.h
+        - path: ../FWlib/inc/stm32f10x_wwdg.h
+        - path: ../FWlib/src/misc.c
+        - path: ../FWlib/src/stm32f10x_adc.c
+        - path: ../FWlib/src/stm32f10x_bkp.c
+        - path: ../FWlib/src/stm32f10x_can.c
+        - path: ../FWlib/src/stm32f10x_cec.c
+        - path: ../FWlib/src/stm32f10x_crc.c
+        - path: ../FWlib/src/stm32f10x_dac.c
+        - path: ../FWlib/src/stm32f10x_dbgmcu.c
+        - path: ../FWlib/src/stm32f10x_dma.c
+        - path: ../FWlib/src/stm32f10x_exti.c
+        - path: ../FWlib/src/stm32f10x_flash.c
+        - path: ../FWlib/src/stm32f10x_fsmc.c
+        - path: ../FWlib/src/stm32f10x_gpio.c
+        - path: ../FWlib/src/stm32f10x_i2c.c
+        - path: ../FWlib/src/stm32f10x_iwdg.c
+        - path: ../FWlib/src/stm32f10x_pwr.c
+        - path: ../FWlib/src/stm32f10x_rcc.c
+        - path: ../FWlib/src/stm32f10x_rtc.c
+        - path: ../FWlib/src/stm32f10x_sdio.c
+        - path: ../FWlib/src/stm32f10x_spi.c
+        - path: ../FWlib/src/stm32f10x_tim.c
+        - path: ../FWlib/src/stm32f10x_usart.c
+        - path: ../FWlib/src/stm32f10x_wwdg.c
+      folders: []
+    - name: USER
+      files:
+        - path: ../USER/main.c
+        - path: ../USER/stm32f10x_conf.h
+        - path: ../USER/stm32f10x_it.c
+        - path: ../USER/stm32f10x_it.h
+        - path: ../USER/McuInit.c
+        - path: ../USER/McuInit.h
+        - path: ../USER/HeadInclude.h
+        - path: ../USER/SubDefine.h
+        - path: ../USER/Lib_KeyDriver.c
+        - path: ../USER/Lib_KeyDriver.h
+        - path: ../USER/Lib_KeyDriver_const.h
+        - path: ../USER/KeyDeal.c
+        - path: ../USER/KeyDeal.h
+        - path: ../USER/Uart.c
+        - path: ../USER/Uart.h
+        - path: ../USER/Disp.c
+        - path: ../USER/Disp.h
+        - path: ../USER/Disp_const.h
+        - path: ../USER/driver_TM1628.c
+        - path: ../USER/driver_TM1628.h
+        - path: ../USER/IIC.c
+        - path: ../USER/IIC.h
+        - path: ../USER/beep.c
+        - path: ../USER/beep.h
+        - path: ../USER/beep_const.h
+        - path: ../USER/RGB.c
+        - path: ../USER/RGB.h
+        - path: ../USER/adc.c
+        - path: ../USER/adc.h
+        - path: ../USER/sensor_const.h
+      folders: []
+    - name: ::CMSIS
+      files: []
+      folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  uid: 93dbacbaa27f04c8d42865647032c37d
+targets:
+  Target 1:
+    cppPreprocessAttrs:
+      defineList:
+        - USE_STDPERIPH_DRIVER
+        - STM32F10X_MD
+      incList:
+        - ../CMSIS/CM3/CoreSupport
+        - ../FWlib/inc
+        - ../FWlib/src
+        - ../USER
+        - ../CMSIS/CM3/DeviceSupport
+        - .cmsis/include
+        - ../MDK/RTE/_Target 1
+      libList: []
+    excludeList: []
+    settings: {}
+    toolchain: AC5
+    toolchainConfigMap:
+      AC5:
+        archExtensions: ""
+        cpuType: Cortex-M3
+        floatingPointHardware: none
+        options:
+          version: 4
+          afterBuildTasks: []
+          asm-compiler:
+            defines: []
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            CXX_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            C_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            c99-mode: true
+            one-elf-section-per-function: true
+            optimization: level-0
+            warnings: all-warnings
+          global:
+            output-debug-info: enable
+            use-microLIB: true
+          linker:
+            $outputTaskExcludes:
+              - .bin
+            output-format: elf
+            ro-base: "0x08000000"
+            rw-base: "0x20000000"
+            xo-base: ""
+        scatterFilePath: ""
+        storageLayout:
+          RAM:
+            - id: 1
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 3
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 1
+              isChecked: true
+              mem:
+                size: "0x5000"
+                startAddr: "0x20000000"
+              noInit: false
+              tag: IRAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: IRAM
+          ROM:
+            - id: 1
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 3
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 1
+              isChecked: true
+              isStartup: true
+              mem:
+                size: "0x10000"
+                startAddr: "0x8000000"
+              tag: IROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: IROM
+        useCustomScatterFile: false
+    uploadConfigMap:
+      JLink:
+        baseAddr: ""
+        bin: ""
+        cpuInfo:
+          cpuName: "null"
+          vendor: "null"
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+      STLink:
+        address: "0x8000000"
+        bin: ""
+        elFile: None
+        optionBytes: .eide/target 1.st.option.bytes.ini
+        otherCmds: ""
+        proType: SWD
+        resetMode: default
+        runAfterProgram: true
+        speed: 4000
+    uploader: STLink

@@ -1,0 +1,42 @@
+# Keil / ARMCC build outputs
+**/MDK/Objects/
+**/MDK/Listings/
+**/MDK/DebugConfig/
+**/EIDE/.cmsis/
+**/EIDE/build/
+*.o
+*.d
+*.crf
+*.map
+*.lst
+*.lnp
+*.axf
+*.elf
+*.hex
+*.bin
+*.htm
+*.html
+*.build_log.htm
+
+# Logs and temporary debug files
+*.log
+*.bak_*
+tmp_*/
+tmp_*
+codex_debug.ini
+debug_audio.ini
+debug_audio.log
+
+# Archives of source snapshots; source directories are tracked instead
+*.zip
+*.rar
+*.7z
+
+# Python/runtime caches
+__pycache__/
+*.pyc
+
+# OS/editor files
+Thumbs.db
+.DS_Store
+*.swp
