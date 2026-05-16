@@ -571,3 +571,14 @@ else
   - 避免“软件以为已经切到音轨 2/3，但模块实际还在上一轨或蓝牙模式”的状态污染。
   - 偶发 OK 丢失时通过重发恢复，而不是把错误状态继续传递到后续切换。
 - 验证：控制板 Keil 编译通过：`0 Error(s), 28 Warning(s)`；warning 仍为原有隐式声明/未使用变量类。
+## 2026-05-16：梳理面板 Key5 按键作用
+
+- 用户询问：面板 Key5 按键的作用是什么，先梳理。
+- 结论：Key5 是面板侧 RGB/氛围灯控制键，主要修改 `MchInf.RGBMode1`，再由面板通过 RS485 帧中的 LEDState 字节发送给控制板；控制板通过 `f_MCU_OutRGBPWM_1(MchInf.LEDState)` 输出 RGB 灯。
+- 普通模式逻辑位于面板 `USER\KeyDeal.c` 的 `f_Key5Deal_Run()`：
+  - 睡眠模式 `MODESLEEP` 或除垢睡眠 `bFunChuGouSleep` 下直接返回，不响应。
+  - 等待模式且息屏时，先唤醒显示：清 `bDispDark`，清等待无按键计时。
+  - 短按 `PRESSED_RE`：在 `MODEWAIT/MODECHUGOU` 下切换 `RGBMode1` 关闭/白色；在 `MODERUN/MODEZANTING` 下切换 `RGBMode1` 关闭/当前程序对应颜色。
+  - 长按/持续按 `PRESSED_600mS`：调整 `RGBMode1` 颜色；运行/暂停时按 `ModeRunState` 限制在对应颜色组内切换，非睡眠非运行时在多个颜色间递增循环。
+  - 每次有效操作会蜂鸣并置 `bflagzhendong1`。
+- 自检模式逻辑位于 `f_Key5Deal_SC()`：Key5 用于推进自检步骤、确认图标/按键/LED 测试流程。
