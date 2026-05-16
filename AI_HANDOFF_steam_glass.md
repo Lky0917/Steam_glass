@@ -441,3 +441,15 @@ else
 - 当前项目根目录原本不是 Git 仓库，准备在 `F:\YunPeng_TestDemo\Steam_glass\2026-4-24` 初始化 Git。
 - 已新增 `.gitignore`：保留源码、Keil 工程文件、文档、skill 和交接记录；忽略 Keil/ARMCC 编译产物、日志、临时调试文件、压缩包、缓存文件。
 - 远端连通性初次检查 `git ls-remote` 被网络重置，后续仍会继续尝试添加远端并 push；若推送因网络或 GitHub 认证失败，本地提交仍可用于本机回滚。
+## 2026-05-16：Git 本地快照已完成，GitHub 推送受网络/认证阻塞
+
+- 已在项目根目录 `F:\YunPeng_TestDemo\Steam_glass\2026-4-24` 初始化 Git 仓库，当前分支为 `main`。
+- 已创建首次提交：`44e14b1 Initial steam glass project snapshot`。
+- 已添加远端：`origin https://github.com/Lky0917/Steam_glass.git`。
+- 已创建本地回滚标签：`backup/initial-2026-05-16`，指向首次项目快照。
+- `.gitignore` 已配置忽略 Keil/ARMCC/EIDE 编译产物、临时调试文件、日志、压缩包、Python 缓存等。
+- 推送状态：
+  - `git push -u origin main` 第一次失败：GitHub HTTPS 连接被重置。
+  - 设置 `http.version=HTTP/1.1` 和 `http.postBuffer=524288000` 后第二次失败：无法连接 `github.com:443`。
+  - SSH 检查 `ssh -T git@github.com` 能到达 GitHub，但返回 `Permission denied (publickey)`，说明当前机器没有可用 GitHub SSH key。
+- 当前结论：本地 Git 回滚能力已建立；远端上传需要恢复 GitHub HTTPS 网络，或配置 GitHub SSH key / token 后再次执行 push。
