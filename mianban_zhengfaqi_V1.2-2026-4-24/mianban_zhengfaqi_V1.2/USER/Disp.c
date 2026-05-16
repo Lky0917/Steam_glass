@@ -115,7 +115,9 @@ void f_Disp_saomiao(void)
 	else
 		LED_ADD_OFF_IO;
 
-	if ((DispAct[3] & 0x20) && (nCalTime < DarkCal[9])) // music
+	if ((ModeState != MODESLEEP) &&
+		(((MchInf.BLErepair) && (DispAct[3] & 0x20) && (nCalTime < DarkCal[9])) ||
+		 ((!MchInf.BLErepair) && (nCalTime < (MchInf.MusicOn ? 90 : 2))))) // music
 		LED_BLE_ON_IO;
 	else
 		LED_BLE_OFF_IO;

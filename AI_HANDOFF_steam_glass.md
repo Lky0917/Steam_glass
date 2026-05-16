@@ -477,3 +477,14 @@ else
   - 标签：`backup/current-2026-05-16`
   - 标签：`backup/initial-2026-05-16`
 - 后续若 Git 推送/拉取再次失败，优先检查本地代理端口 `127.0.0.1:7897` 是否仍在运行。
+## 2026-05-16：修复面板 Key7 播放/暂停指示灯不同步
+
+- 问题：Key7 短按后控制板播放/暂停动作正常，但面板上播放/暂停对应的两颗指示灯（PB13 / IO_CTRL_14 驱动的 LED11+LED12）没有随 `MchInf.MusicOn` 明显亮/暗变化。
+- 修改板子：面板。
+- 修改文件：`mianban_zhengfaqi_V1.2-2026-4-24\mianban_zhengfaqi_V1.2\USER\Disp.c`。
+- 修改位置：`f_Disp_saomiao()` 中 PB13 音乐灯扫描输出处。
+- 原逻辑：PB13 必须同时满足 `DispAct[3] & 0x20` 和 `nCalTime < DarkCal[9]` 才点亮，实际亮/暗依赖显示缓冲 `DispAct`，可能导致 `MusicOn` 已翻转但灯没有同步变化。
+- 新逻辑：
+  - 非睡眠且处于蓝牙配对 `MchInf.BLErepair` 时，继续沿用原 `DispAct[3] & 0x20` 闪烁路径，保留配对闪烁效果。
+  - 非配对时，PB13 直接按 `MchInf.MusicOn` 输出 PWM 亮度：播放 `MusicOn=1` 时占空比约 90%，暂停 `MusicOn=0` 时占空比约 2%。
+- 验证：已通过 Keil UV4 编译面板工程，结果 `0 Error(s), 9 Warning(s)`；警告为原有未使用变量/文件末尾换行类警告。
