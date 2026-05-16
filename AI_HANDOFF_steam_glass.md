@@ -582,3 +582,18 @@ else
   - 长按/持续按 `PRESSED_600mS`：调整 `RGBMode1` 颜色；运行/暂停时按 `ModeRunState` 限制在对应颜色组内切换，非睡眠非运行时在多个颜色间递增循环。
   - 每次有效操作会蜂鸣并置 `bflagzhendong1`。
 - 自检模式逻辑位于 `f_Key5Deal_SC()`：Key5 用于推进自检步骤、确认图标/按键/LED 测试流程。
+## 2026-05-16：修改 Key5 短按为彩灯开关
+
+- 用户要求：Key5 短按必须是开启和关闭彩灯，不应该切换颜色。
+- 修改板子：面板。
+- 修改文件：`mianban_zhengfaqi_V1.2-2026-4-24\mianban_zhengfaqi_V1.2\USER\KeyDeal.c`。
+- 修改位置：`f_Key5Deal_Run()` 的 `PRESSED_RE` 短按分支。
+- 原逻辑：
+  - `MODEWAIT/MODECHUGOU` 下短按为 `RGB_CLOSE <-> RGB_WHITE`。
+  - `MODERUN/MODEZANTING` 下短按为 `RGB_CLOSE <-> 当前 ModeRunState 对应颜色`，所以运行时会出现短按恢复黄/蓝/紫等颜色。
+- 新逻辑：
+  - `MODEWAIT/MODECHUGOU/MODERUN/MODEZANTING` 下统一处理。
+  - `RGBMode1 != RGB_CLOSE` 时短按关闭彩灯。
+  - `RGBMode1 == RGB_CLOSE` 时短按固定打开为 `RGB_WHITE`。
+  - `PRESSED_600mS` 长按调色逻辑暂未修改。
+- 验证：面板 Keil 编译通过：`0 Error(s), 0 Warning(s)`。

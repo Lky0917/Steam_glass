@@ -421,28 +421,12 @@ void f_Key5Deal_Run(void)
 		//				MchInf.RGBMode = RGB_CLOSE;
 		//		}
 		//		else //
-		if ((ModeState == MODEWAIT) || (ModeState == MODECHUGOU))
+		if ((ModeState == MODEWAIT) || (ModeState == MODECHUGOU) || (ModeState == MODERUN) || (ModeState == MODEZANTING))
 		{
 			if (MchInf.RGBMode1 != RGB_CLOSE)
 				MchInf.RGBMode1 = RGB_CLOSE;
 			else
 				MchInf.RGBMode1 = RGB_WHITE;
-		}
-		else if ((ModeState == MODERUN) || (ModeState == MODEZANTING))
-		{
-			if (MchInf.RGBMode1 == RGB_CLOSE)
-			{
-				if (MchInf.ModeRunState == 0)
-					MchInf.RGBMode1 = RGB_ZISe;
-				else if (MchInf.ModeRunState == 1)
-					MchInf.RGBMode1 = RGB_YELLOW;
-				else if (MchInf.ModeRunState == 2)
-					MchInf.RGBMode1 = RGB_BLUE;
-				else if (MchInf.ModeRunState == 3)
-					MchInf.RGBMode1 = RGB_ZISe;
-			}
-			else
-				MchInf.RGBMode1 = RGB_CLOSE;
 		}
 		f_Beep(NORMAL);
 		MchInf.bflagzhendong1 = 1;
