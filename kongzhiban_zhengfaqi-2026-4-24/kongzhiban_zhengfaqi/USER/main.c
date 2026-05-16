@@ -132,21 +132,13 @@ void f_CalTm(void)
 					MchInf.AudioTaskStep = AUDIO_STEP_TF_SEND_AB;
 				else if (MchInf.AudioTaskStep == AUDIO_STEP_TF_WAIT_AB_OK)
 				{
-					MchInf.AudioCurrentTrack = MchInf.AudioTaskTarget;
-					MchInf.MusicPlayState = 1;
-					MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
-					MchInf.bflagbleset = 0;
-					MchInf.bflagTF = 0;
+					MchInf.AudioTaskStep = AUDIO_STEP_TF_SEND_AB;
 				}
 				else if (MchInf.AudioTaskStep == AUDIO_STEP_WHITE_WAIT_CB_OK)
 					MchInf.AudioTaskStep = AUDIO_STEP_WHITE_SEND_CM01;
 				else if (MchInf.AudioTaskStep == AUDIO_STEP_WHITE_WAIT_CM01_OK)
 				{
-					MchInf.AudioCurrentTrack = 0;
-					MchInf.MusicPlayState = 0;
-					MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
-					MchInf.bflagbleset = 0;
-					MchInf.bflagTF = 0;
+					MchInf.AudioTaskStep = AUDIO_STEP_WHITE_SEND_CM01;
 				}
 			}
 		}

@@ -550,3 +550,24 @@ else
   - 控制板 Keil 编译通过：`0 Error(s), 60 Warning(s)`。
   - 面板 Keil 编译通过：`0 Error(s), 34 Warning(s)`。
   - 本次实际逻辑改动只在控制板；面板只是参与编译确认协议兼容。
+## 2026-05-16：修正音频状态机超时假完成导致的软件状态污染
+
+- 用户反馈：音轨切换仍会混乱，要求整体排查并继续优化。
+- 进一步排查结果：
+  - 控制板 `b100msFlag` 实际为 100ms，音频状态机等待 OK 的超时阈值为 10 次，即约 1 秒。
+  - 原逻辑在 `AUDIO_STEP_TF_WAIT_AB_OK` 超时后，会直接执行：
+    - `AudioCurrentTrack = AudioTaskTarget`
+    - `MusicPlayState = 1`
+    - `AudioTaskStep = AUDIO_STEP_IDLE`
+  - 原逻辑在 `AUDIO_STEP_WHITE_WAIT_CM01_OK` 超时后，也会直接把当前轨道写成白灯/蓝牙模式并结束任务。
+  - 这会导致模块没有实际完成切换时，软件记录却已经变成“完成”，后续 `AudioCurrentTrack`、队列去重和下一次状态机判断都会基于假状态运行。
+- 修改板子：控制板。
+- 修改文件：`kongzhiban_zhengfaqi-2026-4-24\kongzhiban_zhengfaqi\USER\main.c`。
+- 修改内容：
+  - `AUDIO_STEP_TF_WAIT_AB_OK` 超时后不再假完成，改为回到 `AUDIO_STEP_TF_SEND_AB`，重发当前 `AT+ABn`。
+  - `AUDIO_STEP_WHITE_WAIT_CM01_OK` 超时后不再假完成，改为回到 `AUDIO_STEP_WHITE_SEND_CM01`，重发 `AT+CM01`。
+  - 只有真正收到模块 `OK` 时，才在 `Uart.c` 的 OK 处理分支里更新 `AudioCurrentTrack` 和 `MusicPlayState`。
+- 预期效果：
+  - 避免“软件以为已经切到音轨 2/3，但模块实际还在上一轨或蓝牙模式”的状态污染。
+  - 偶发 OK 丢失时通过重发恢复，而不是把错误状态继续传递到后续切换。
+- 验证：控制板 Keil 编译通过：`0 Error(s), 28 Warning(s)`；warning 仍为原有隐式声明/未使用变量类。
