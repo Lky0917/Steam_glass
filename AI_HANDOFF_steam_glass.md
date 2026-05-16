@@ -453,3 +453,14 @@ else
   - 设置 `http.version=HTTP/1.1` 和 `http.postBuffer=524288000` 后第二次失败：无法连接 `github.com:443`。
   - SSH 检查 `ssh -T git@github.com` 能到达 GitHub，但返回 `Permission denied (publickey)`，说明当前机器没有可用 GitHub SSH key。
 - 当前结论：本地 Git 回滚能力已建立；远端上传需要恢复 GitHub HTTPS 网络，或配置 GitHub SSH key / token 后再次执行 push。
+## 2026-05-16：再次尝试推送 GitHub
+
+- 用户再次指定远端：`https://github.com/Lky0917/Steam_glass.git`。
+- 本地状态：`main` 分支干净，HEAD 为 `315e832`，标签 `backup/initial-2026-05-16` 与 `backup/current-2026-05-16` 存在。
+- 再次执行 `git push -u origin main --tags` 失败：无法连接 `github.com:443`。
+- 网络检查结果：
+  - DNS 解析正常，`github.com` 解析到 `20.205.243.166`。
+  - `Test-NetConnection github.com -Port 443` 失败，说明当前网络到 GitHub HTTPS 端口不可达。
+  - 未检测到 Git HTTP/HTTPS 代理配置。
+- 临时切换 SSH 远端 `git@github.com:Lky0917/Steam_glass.git` 后重试，SSH 通道可达，但失败于 `Permission denied (publickey)`，说明当前机器没有可用 GitHub SSH key 或该 key 未授权到仓库。
+- 已将远端恢复为 HTTPS：`https://github.com/Lky0917/Steam_glass.git`。
