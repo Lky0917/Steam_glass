@@ -488,3 +488,19 @@ else
   - 非睡眠且处于蓝牙配对 `MchInf.BLErepair` 时，继续沿用原 `DispAct[3] & 0x20` 闪烁路径，保留配对闪烁效果。
   - 非配对时，PB13 直接按 `MchInf.MusicOn` 输出 PWM 亮度：播放 `MusicOn=1` 时占空比约 90%，暂停 `MusicOn=0` 时占空比约 2%。
 - 验证：已通过 Keil UV4 编译面板工程，结果 `0 Error(s), 9 Warning(s)`；警告为原有未使用变量/文件末尾换行类警告。
+## 2026-05-16：修复 Key7 播放/暂停状态与灯反相/失步
+
+- 用户反馈：播放时按 Key7 一次应暂停并让两颗灯变亮，再按一次应继续播放并让两颗灯变暗；实际出现灯亮/暗与播放/暂停反相，或灯在变但音频没有执行暂停/播放。
+- 根因判断：面板 `f_Key7Deal_Run()` 在短按时本地执行 `MchInf.MusicOn ^= 1`，但控制板收到 `0x01` 后才发送 `AT+CB` 给音频模块；只要 RS485/音频模块执行与面板本地翻转不同步，就会出现灯状态和实际播放状态脱节。
+- 修改板子：面板 + 控制板。
+- 面板修改：
+  - `USER\KeyDeal.c`：Key7 短按只置位 `MchInf.blekey |= 0x01`，不再本地翻转 `MusicOn`。
+  - `USER\Uart.c`：收到控制板回包后，用 `bflagBleConnState == 2` 同步 `MchInf.MusicOn`。
+  - `USER\Disp.c`：按当前需求反相显示，`MusicOn=1` 表示播放，PB13 两灯低亮度；`MusicOn=0` 表示暂停/未播放，PB13 两灯高亮度。
+- 控制板修改：
+  - `USER\main.c`：收到 `Blekey & 0x01` 后，无论当前 `ModeRunState` 是白灯还是 TF 音轨，都在发送 `AT+CB` 后同步翻转 `bflagBleConnState` 的播放/暂停状态，不再只限制 `ModeRunState == 0`。
+  - `USER\main.c` 和 `USER\Uart.c`：TF 音轨切换完成后设 `bflagBleConnState = 2`，切回白灯/蓝牙模式完成后设 `bflagBleConnState = 1`，保证回传状态和当前音频模式一致。
+- 验证：
+  - 面板 Keil 编译通过：`0 Error(s), 9 Warning(s)`。
+  - 控制板 Keil 编译通过：`0 Error(s), 36 Warning(s)`。
+  - 现有 warning 为项目原有未使用变量、隐式声明、文件末尾换行等类型；本次无编译错误。

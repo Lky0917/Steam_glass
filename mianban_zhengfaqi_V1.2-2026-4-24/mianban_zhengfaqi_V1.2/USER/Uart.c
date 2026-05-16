@@ -131,6 +131,7 @@ void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 		MchInf.bErrorTmpr = UartInf->RxBufferTemp[5];
 		MchInf.BleCMDState = UartInf->RxBufferTemp[6];
 		MchInf.bflagBleConnState = UartInf->RxBufferTemp[8]; // À¶ÑÀ×´Ì¬
+		MchInf.MusicOn = (MchInf.bflagBleConnState == 2) ? 1 : 0;
 
 
 		if (MchInf.WaterLV & 0x20)

@@ -117,7 +117,7 @@ void f_Disp_saomiao(void)
 
 	if ((ModeState != MODESLEEP) &&
 		(((MchInf.BLErepair) && (DispAct[3] & 0x20) && (nCalTime < DarkCal[9])) ||
-		 ((!MchInf.BLErepair) && (nCalTime < (MchInf.MusicOn ? 90 : 2))))) // music
+		 ((!MchInf.BLErepair) && (nCalTime < (MchInf.MusicOn ? 2 : 90))))) // music
 		LED_BLE_ON_IO;
 	else
 		LED_BLE_OFF_IO;
@@ -855,13 +855,13 @@ void f_Disp(void)
 			}
 		}
 
-		else if (MchInf.MusicOn) // ²¥·ÅÁÁ£¬ÔÝÍ£°µ£¨²»ÔÙÒÀÀµÀ¶ÑÀÁ¬½Ó×´Ì¬£©
+		else if (MchInf.MusicOn) // playing dim, paused/stopped bright
 		{
-			bDarkMusic = 0; // ÁÁ
+			bDarkMusic = 1;
 		}
 		else
 		{
-			bDarkMusic = 1; // °µ
+			bDarkMusic = 0;
 		}
 
 		// if ((MchInf.bflagBleConnState != 2) && (MchInf.MusicOn == 0))

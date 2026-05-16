@@ -593,8 +593,7 @@ void f_Key7Deal_Run(void)
 			{
 				f_Beep(NORMAL);
 
-				MchInf.blekey |= 0x01; // 发送播�?暂停命令
-				MchInf.MusicOn ^= 1;
+				MchInf.blekey |= 0x01; // send play/pause command; MusicOn follows control-board status
 			}
 		}
 		// else if (KeyInf.longtimeKey7 < 30)

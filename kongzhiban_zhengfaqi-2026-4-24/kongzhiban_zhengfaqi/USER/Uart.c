@@ -215,6 +215,7 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 			{
 				MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 				MchInf.AudioCurrentTrack = MchInf.AudioTaskTarget;
+				MchInf.bflagBleConnState = 2;
 				MchInf.bflagbleset = 0;
 				MchInf.bflagTF = 0;
 			}
@@ -226,6 +227,7 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 			{
 				MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 				MchInf.AudioCurrentTrack = 0;
+				MchInf.bflagBleConnState = 1;
 				MchInf.bflagbleset = 0;
 				MchInf.bflagTF = 0;
 			}
