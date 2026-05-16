@@ -464,3 +464,16 @@ else
   - 未检测到 Git HTTP/HTTPS 代理配置。
 - 临时切换 SSH 远端 `git@github.com:Lky0917/Steam_glass.git` 后重试，SSH 通道可达，但失败于 `Permission denied (publickey)`，说明当前机器没有可用 GitHub SSH key 或该 key 未授权到仓库。
 - 已将远端恢复为 HTTPS：`https://github.com/Lky0917/Steam_glass.git`。
+## 2026-05-16：GitHub 推送成功
+
+- 用户说明网页可以正常访问 GitHub，进一步检查发现浏览器使用系统代理：`127.0.0.1:7897`。
+- Git 当前仓库原本未配置代理，因此 HTTPS 推送无法连接 `github.com:443`。
+- 已在当前仓库配置：
+  - `git config http.proxy http://127.0.0.1:7897`
+  - `git config https.proxy http://127.0.0.1:7897`
+- 执行 `git push -u origin main --tags` 成功。
+- 已上传到远端：`https://github.com/Lky0917/Steam_glass.git`
+  - 分支：`main -> origin/main`
+  - 标签：`backup/current-2026-05-16`
+  - 标签：`backup/initial-2026-05-16`
+- 后续若 Git 推送/拉取再次失败，优先检查本地代理端口 `127.0.0.1:7897` 是否仍在运行。
