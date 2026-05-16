@@ -659,3 +659,20 @@ else
   - 在 `f_audio_queue_push()` 中，当 `AudioTaskStep != AUDIO_STEP_IDLE` 且 `AudioTaskTarget == mode` 时，先调用 `f_audio_queue_clear()` 清空旧队列，再返回。
   - 这样最新面板目标与当前执行目标一致时，不会再执行过期的排队目标。
 - 验证：控制板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。
+## 2026-05-16：音轨切换改为最新目标优先并屏蔽旧 OK
+
+- 用户要求：继续优化音轨切换逻辑，必须确保正确切换、不再出现音轨错乱，且不能影响其他逻辑。
+- 进一步排查结论：
+  - 上一次只清理了“当前目标等于新目标”时的残留队列，但当“新目标不同于当前正在等待 OK 的旧任务”时，旧任务仍会继续占用 `AudioTaskStep`。
+  - 旧任务等待期间如果面板继续快速切换，控制板只能把最新目标放进队列，旧任务收到 OK 后仍可能先更新 `AudioCurrentTrack`，再执行新目标；这会造成短暂错轨、延迟切换和状态污染。
+- 修改板子：控制板。
+- 修改文件：`kongzhiban_zhengfaqi-2026-4-24\kongzhiban_zhengfaqi\USER\Uart.c`。
+- 修改内容：
+  - 新增 `f_audio_queue_latest(mode)`：队列始终只保存最新目标，不累积历史目标。
+  - 新增 `f_audio_task_cancel()`：当新目标不同于当前正在执行目标时，立即取消旧音频任务，清 `AudioTaskStep/AudioTaskTarget/bflagbleset/bflagTF`，并把最新目标重新入队。
+  - 新增 `bAudioIgnoreNextOk`：如果取消旧任务时旧任务正在等待音频模块 OK，则忽略下一次 OK，防止旧命令回包推进新的状态机。
+  - 关机组合命令 `0x109` 会清队列、清任务，并清 `bAudioIgnoreNextOk`，不影响关机停音频流程。
+- 影响范围：
+  - 只改变 B1 音轨/白灯切换路径的调度方式。
+  - 不改面板逻辑、不改 RS485 帧格式、不改继电器、温控、排水、彩灯开关、音量、蓝牙配对和播放/暂停分支。
+- 验证：控制板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。

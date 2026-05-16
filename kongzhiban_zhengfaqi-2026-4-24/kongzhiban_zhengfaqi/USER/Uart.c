@@ -108,10 +108,39 @@ void f_SendDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 {
 	f_StartSend_Uart(UartInf, USARTx);
 }
+static unsigned char bAudioIgnoreNextOk = 0;
+
 static void f_audio_queue_clear(void)
 {
 	MchInf.AudioQueueHead = 0;
 	MchInf.AudioQueueTail = 0;
+}
+
+static unsigned char f_audio_step_waits_ok(unsigned char step)
+{
+	return (step == AUDIO_STEP_TF_WAIT_CM04_OK) ||
+		   (step == AUDIO_STEP_TF_WAIT_AB_OK) ||
+		   (step == AUDIO_STEP_WHITE_WAIT_CB_OK) ||
+		   (step == AUDIO_STEP_WHITE_WAIT_CM01_OK);
+}
+
+static void f_audio_queue_latest(unsigned char mode)
+{
+	f_audio_queue_clear();
+	MchInf.AudioQueue[0] = mode;
+	MchInf.AudioQueueHead = 0;
+	MchInf.AudioQueueTail = 1;
+}
+
+static void f_audio_task_cancel(void)
+{
+	if (f_audio_step_waits_ok(MchInf.AudioTaskStep))
+		bAudioIgnoreNextOk = 1;
+
+	MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
+	MchInf.AudioTaskTarget = 0;
+	MchInf.bflagbleset = 0;
+	MchInf.bflagTF = 0;
 }
 
 static void f_audio_queue_push(unsigned char mode)
@@ -126,10 +155,8 @@ static void f_audio_queue_push(unsigned char mode)
 			return;
 		}
 
-		f_audio_queue_clear();
-		MchInf.AudioQueue[0] = mode;
-		MchInf.AudioQueueHead = 0;
-		MchInf.AudioQueueTail = 1;
+		f_audio_task_cancel();
+		f_audio_queue_latest(mode);
 		return;
 	}
 
@@ -138,13 +165,9 @@ static void f_audio_queue_push(unsigned char mode)
 		last = (MchInf.AudioQueueTail - 1) & 0x07;
 		if (MchInf.AudioQueue[last] == mode)
 			return;
-
-		f_audio_queue_clear();
 	}
 
-	MchInf.AudioQueue[0] = mode;
-	MchInf.AudioQueueHead = 0;
-	MchInf.AudioQueueTail = 1;
+	f_audio_queue_latest(mode);
 }
 // 接收数据
 void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
@@ -176,6 +199,7 @@ void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 			f_audio_queue_clear();
 			MchInf.AudioTaskStep = AUDIO_STEP_IDLE;
 			MchInf.AudioTaskTarget = 0;
+			bAudioIgnoreNextOk = 0;
 		}
 		else if (rxBlekey & (0x80 | 0x200 | 0x400 | 0x800))
 		{
@@ -193,7 +217,11 @@ void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 		UartInf->bAnasyingFlag = false;
 		if ((UartInf->RxBufferTemp[0] == 'O') && (UartInf->RxBufferTemp[1] == 'K'))
 		{
-			if (MchInf.AudioTaskStep == AUDIO_STEP_TF_WAIT_CM04_OK)
+			if (bAudioIgnoreNextOk)
+			{
+				bAudioIgnoreNextOk = 0;
+			}
+			else if (MchInf.AudioTaskStep == AUDIO_STEP_TF_WAIT_CM04_OK)
 			{
 				MchInf.AudioTaskStep = AUDIO_STEP_TF_SEND_AB;
 			}
