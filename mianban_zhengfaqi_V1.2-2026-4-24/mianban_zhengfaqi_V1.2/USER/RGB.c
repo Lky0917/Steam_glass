@@ -4,9 +4,6 @@ static unsigned int called = 500;
 
 void f_MCU_OutRGBPWM_0(void) 
 {
-	unsigned int tempcomp = 500;
-	unsigned char state = 0;
-  
 //if(MchInf.RGBMode1 == RGB_CLOSE)	
 //	state = RGB_CLOSE;
 //else
@@ -114,7 +111,6 @@ void f_MCU_OutRGBPWM_0(void)
 
 void f_MCU_OutRGBPWM_1(void) 
 {
-	unsigned int tempcomp = 500;
 	called  = 1;
 	
 	if(MchInf.RGBMode == RGB_WHITE)
@@ -232,7 +228,6 @@ void f_MCU_OutRGBPWM_1(void)
 
 void f_Deal_PWM(void)
 {
-		static unsigned int caltime30s = 0;
 //	if(ModeState == MODERUN)
 //	{
 		f_MCU_OutRGBPWM_1();

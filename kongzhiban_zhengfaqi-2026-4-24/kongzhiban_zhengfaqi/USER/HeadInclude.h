@@ -9,6 +9,7 @@
 #ifndef __HEADERINCLUDE_H
 #define __HEADERINCLUDE_H
 
+#include <string.h>
 #include "stm32f10x.h"
 #include "SubDefine.h"
 #include "McuInit.h"

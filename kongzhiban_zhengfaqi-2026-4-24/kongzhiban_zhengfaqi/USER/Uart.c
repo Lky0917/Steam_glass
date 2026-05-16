@@ -106,8 +106,6 @@ void f_SendDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 
 void f_SendDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 {
-	unsigned char i;
-
 	f_StartSend_Uart(UartInf, USARTx);
 }
 static void f_audio_queue_clear(void)
@@ -186,7 +184,6 @@ void f_RceDeal(UARTINF *UartInf, USART_TypeDef *USARTx)
 }
 void f_RceDeal_1(UARTINF *UartInf, USART_TypeDef *USARTx)
 {
-	unsigned char i, checksum = 0;
 	if ((UartInf->bAnasyingFlag) &&
 		((SystemTick_Get_Ticks_ms - UartInf->nRceTimefromSysTick) > UARTDELAYTIME))
 	{

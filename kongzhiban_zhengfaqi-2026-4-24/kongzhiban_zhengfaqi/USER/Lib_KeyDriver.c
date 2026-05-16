@@ -252,6 +252,7 @@ void f_KeyScan(void)
 			return;
 		}
 		
+#if KEY_COM_NUMB > 0
 		for(keyName = 0; keyName < KEY_COM_NUMB; keyName ++)//组合按键扫描处理
 		{
 			if(((nKeyInf & KEY_ALL) == nTab_KeyHexDef[keyName]) \
@@ -267,11 +268,12 @@ void f_KeyScan(void)
 						&nKeyResultInf,
 						&nKeyStep,
 						&nKeyDownTm,
-						keyName + 1
+						(KEY_PRESSED_STATE)(keyName + 1)
 						);
 				return;
 			}
 		}
+#endif
 
 		for(keyName  = SIG_BASE; keyName < SIG_BASE + KEY_SIG_NUMB; keyName ++)//单按键扫描处理
 		{
@@ -289,7 +291,7 @@ void f_KeyScan(void)
 						&nKeyResultInf,
 						&nKeyStep,
 						&nKeyDownTm,
-						keyName + 1
+						(KEY_PRESSED_STATE)(keyName + 1)
 						);
 				return;
 			}

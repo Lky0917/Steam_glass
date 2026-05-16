@@ -16,10 +16,8 @@ unsigned char f_NTC_CheckTab(unsigned int ADC_Data)
 {
 	unsigned int cTabBottom,cTabTop;
 	unsigned int ADC_tmp;
-	unsigned int lens;
 	unsigned int tmp;
 
-	lens = 101;
 
 	if(ADC_Data < Tmper[0])
 		return 0;

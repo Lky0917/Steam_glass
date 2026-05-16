@@ -191,7 +191,11 @@ void f_KeyScan(void)
 	f_ChangeKeyInf(&nKeyInf);
 	if((nKeyInf & KEY_ALL) == NO_KEY)//按键释放
 	{
+#if KEY_DELAY_TIME == 0
+		if(1)//释放去抖
+#else
 		if(nNoKeyTm >= KEY_DELAY_TIME)//释放去抖
+#endif
 		{
 			//按键信息清除
 			nKeyResultInf = NO_KEY;
@@ -241,7 +245,7 @@ void f_KeyScan(void)
 						&nKeyResultInf,
 						&nKeyStep,
 						&nKeyDownTm,
-						keyName + 1
+						(KEY_PRESSED_STATE)(keyName + 1)
 						);
 				return;
 			}
@@ -263,7 +267,7 @@ void f_KeyScan(void)
 						&nKeyResultInf,
 						&nKeyStep,
 						&nKeyDownTm,
-						keyName + 1
+						(KEY_PRESSED_STATE)(keyName + 1)
 						);
 				return;
 			}

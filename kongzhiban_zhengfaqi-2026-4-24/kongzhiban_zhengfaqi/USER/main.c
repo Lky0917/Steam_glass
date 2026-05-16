@@ -71,8 +71,6 @@ int main()
 //***********************************
 void f_CalTm(void)
 {
-	static unsigned char i = 0, bflag = 0;
-	static unsigned int ADValue = 0;
 	static unsigned char lastModeRunState = 0xff;
 	static unsigned char poweroff_audio_step = 0;
 	static unsigned char audio_task_last_step = AUDIO_STEP_IDLE;
@@ -212,7 +210,7 @@ void f_CalTm(void)
 		else
 			IO_RLY11_OFF;
 
-		f_MCU_OutRGBPWM_1(MchInf.LEDState);
+		f_MCU_OutRGBPWM_1((RGBMODE)MchInf.LEDState);
 		memset(Uart1_Inf.TxBuffer, 0, 100);
 
 		if ((MchInf.Blekey & 0x109) == 0x109) // power off: stop, idle, disconnect
@@ -407,39 +405,10 @@ void f_CalTm(void)
 		b50msFlag = false;
 	}
 
-	//	if(b100msFlag)										//100ms meeted
-	//	{
-	//		b100msFlag = false;
-	//
-	////		  f_TmprDeal(CHANNEL_ADC0,0);
-	////			f_TmprDeal(CHANNEL_ADC1,1);
-
-	//	}
 
 	if (b250msFlag)
 	{
 		b250msFlag = false;
-		//		if((MchInf.bflagbleset == 2)&&(MchInf.ModeRunState == 1))
-		//		{
-		////			Uart1_Inf.LensSendData = 8;//sizeof("AT+AB1\r\n");
-		////			memcpy(Uart1_Inf.TxBuffer,"AT+AB1\r\n",Uart1_Inf.LensSendData);//TF¿¨²¥·Å
-		////			Uart1_Inf.LensSendData = sizeof("AT+AF/01/*.???\r\n");
-		////			memcpy(Uart1_Inf.TxBuffer,"AT+AF/01/*.???\r\n",Uart1_Inf.LensSendData);
-		//			//f_SendDeal_1(&Uart1_Inf,USART1);
-		//
-		//			Uart1_Inf.LensSendData = 0;
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] ='A';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = 'T';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = '+';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = 'A';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = 'B';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = '0';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = '1';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = '\r';
-		//			Uart1_Inf.TxBuffer[Uart1_Inf.LensSendData++] = '\n';
-		//			f_SendDeal_1(&Uart1_Inf,USART1);
-		//		}
-		//
 	}
 
 	if (b500msFlag) // 500ms meeted

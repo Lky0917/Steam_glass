@@ -5,7 +5,6 @@ void f_MCU_OutRGBPWM_1(RGBMODE state)
 {
 	unsigned int tempcomp = 500;
 	static unsigned int called = 1;
-	static unsigned char lastmodestate = 0xff;
 //	state = RGB_ZISe;
 	
 
@@ -111,27 +110,7 @@ void f_MCU_OutRGBPWM_1(RGBMODE state)
 	}
 	
 
-	
-//	if(lastmodestate != MchInf.LEDState)
-//	{
-//		
-//		if(lastmodestate == RGB_CLOSE)
-//			called = 1;
-////		else
-////			called = 100;
-//		else
-//		{
-//			called++;
-//		
-//			if(called >= 30)
-//			{
-//				lastmodestate = MchInf.LEDState;
-//				called = 30;
-//			}
-//		}
-//			
-//	}
-//	else 	if(called > 1)
+	//	else 	if(called > 1)
 //		called--;
 		
 }

@@ -161,9 +161,6 @@ int main()
 //***********************************
 void f_CalTm(void)
 {
-	static unsigned char i = 0;
-	static unsigned int ADValue = 0;
-
 	if (b10msFlag)
 	{
 		b10msFlag = 0;

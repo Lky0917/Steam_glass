@@ -392,7 +392,6 @@ void f_Key4Deal_Run(void)
 
 void f_Key5Deal_Run(void)
 {
-	static unsigned char RGB_state;
 	if (nKeyResultInf & PRESSED_RE)
 	{
 		bKeyUsedFlag = true;

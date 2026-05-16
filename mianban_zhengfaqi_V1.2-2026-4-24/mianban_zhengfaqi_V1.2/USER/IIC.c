@@ -228,10 +228,6 @@ void I2C_waitack(void)
 
 void SC12A_work(void)
 {	
-	unsigned char i;
-	byte_def Data_Disptab[16];
-
-
 	//ËÍcmd
 	I2C_start();	
 //	I2C_sendbyte(SLAVEADDRESS);
@@ -445,10 +441,6 @@ unsigned int I2C_readWord_1(void)
 
 void SC12A_work_1(void)
 {	
-	unsigned char i;
-	byte_def Data_Disptab[16];
-
-
 	//ËÍcmd
 	I2C_start_1();	
 //	I2C_sendbyte(SLAVEADDRESS);

@@ -50,7 +50,6 @@ byte_def nDark_Flag2;
 
 void f_Disp_saomiao(void)
 {
-	char i, Jiantime;
 	static unsigned char nCalseg = 0, nCalTime = 0, nCalTimeshumaguan = 0;
 
 	//	for(i=0;i<6;i++)
@@ -630,13 +629,8 @@ void f_Disp_TprLV(void)
 	{
 	}
 }
-static unsigned char bAutoChugou = 0;
 void f_Deal_ChugouStart(void)
 {
-
-	static unsigned char bflagAddWater = 0; // 曾经加水
-
-	bAutoChugou = 1;
 
 	// 手动有泵                                         //0 鑷?鍔?  1 鎵嬪姩
 	//			if(((MchInf.bPumpChugou)&&(MchInf.bFunChugouAutoOrManu))||(MchInf.bFunChugouAutoOrManu==0))//鏈夐櫎鍨㈡车
@@ -749,11 +743,8 @@ void f_Disp(void)
 	static unsigned char SoundLast = 50, delaytime = 20; //
 	static unsigned int timelightB1 = 0;
 
-	static unsigned int nCal5sDisp = 0;
-	static unsigned int nCal30sBleConn = 0, Calblecontime = 0;
 	unsigned char temp;
 	static unsigned char bflagEverChugou = 0; // once chugou panduan
-	static unsigned char Delaytime = 0;
 	nIconDisp = 0;
 	nIconDisp1 = 0;
 	MchInf.Relay = 0;
@@ -1357,8 +1348,6 @@ void f_Disp(void)
 
 							MchInf.bFunChuGouStart = 1;
 							MchInf.bFunChuGouCal = 1;
-
-							bAutoChugou = 0;
 
 							MchInf.RGBMode = RGB_RED;
 

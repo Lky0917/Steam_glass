@@ -71,7 +71,7 @@ void EPD_W21_WriteCMD(unsigned char command);
 void f_Disp(void);
 #endif
 
-void f_Disp();
+void f_Disp(void);
 
 
 

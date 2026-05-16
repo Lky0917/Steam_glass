@@ -597,3 +597,36 @@ else
   - `RGBMode1 == RGB_CLOSE` 时短按固定打开为 `RGB_WHITE`。
   - `PRESSED_600mS` 长按调色逻辑暂未修改。
 - 验证：面板 Keil 编译通过：`0 Error(s), 0 Warning(s)`。
+## 2026-05-16：面板代码零行为变化优化
+
+- 用户要求：优化面板所有代码，但逻辑绝对不能变，必须按现有逻辑执行。
+- 执行原则：只做编译器可证明的零行为变化清理，不改状态机、不改按键条件、不改通信协议、不改继电器/灯/音频控制逻辑。
+- 复核中发现 `USER\Lib_KeyDriver.h` 的 `KEY_DELAY_TIME` 曾被改成 `0`，这会改变按键去抖行为；已恢复为原值 `1`，避免混入逻辑变化。
+- 修改板子：面板。
+- 修改范围：
+  - `USER\main.c`：删除 `f_CalTm()` 内未使用的局部静态变量。
+  - `USER\KeyDeal.c`：删除 Key5 处理中未使用的 `RGB_state`。
+  - `USER\Disp.c`：删除未使用的局部变量和只写不读的内部静态变量 `bAutoChugou`，不改变任何实际业务状态赋值。
+  - `USER\IIC.c`：删除 `SC12A_work()` / `SC12A_work_1()` 中未使用的局部变量。
+  - `USER\RGB.c`：删除未使用的局部变量，保留原 PWM 输出逻辑。
+  - `USER\Lib_KeyDriver.c`：对 `ReadKey()` 的枚举参数增加显式类型转换，消除枚举/整数混用 warning。
+  - `USER\flash.h` / `USER\flash.c`：补齐文件末尾换行。
+- 验证：
+  - 面板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。
+  - `git diff --check` 通过，仅提示 Windows CRLF 工作区换行转换警告。
+## 2026-05-16：控制板代码零行为变化优化
+
+- 用户要求：优化控制板代码，在不更改现有逻辑的情况下。
+- 执行原则：只做编译器告警清理、死代码清理和声明规范化，不改状态机、不改 RS485 协议、不改音频/继电器/RGB 输出时序。
+- 修改板子：控制板。
+- 修改范围：
+  - `USER\HeadInclude.h`：补充 `#include <string.h>`，让 `memcpy/memset` 使用标准声明。
+  - `USER\Disp.h` / `USER\Disp.c`：把 `f_Disp()` 声明和定义规范为 `f_Disp(void)`。
+  - `USER\Lib_KeyDriver.c`：对 `ReadKey()` 的枚举参数增加显式类型转换；由于控制板 `KEY_COM_NUMB` 为 `0`，组合键扫描循环改为 `#if KEY_COM_NUMB > 0` 包裹，消除永不执行路径的告警。
+  - `USER\main.c`：删除未使用局部变量；对 `f_MCU_OutRGBPWM_1()` 入参增加显式 `RGBMODE` 转换。
+  - `USER\Uart.c` / `USER\adc.c`：删除未使用局部变量。
+  - `USER\Disp.c` / `USER\RGB.c` / `USER\KeyDeal.c`：删除未使用变量和大段已注释掉的历史代码，不删除任何编译生效的业务逻辑。
+  - `USER\RGB.h` / `USER\nec.c`：补齐文件末尾换行。
+- 验证：
+  - 控制板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`。
+  - 面板 Keil 全量重编译通过：`0 Error(s), 0 Warning(s)`，用于确认本次恢复去抖配置后仍无告警。

@@ -281,21 +281,13 @@ void f_Disp(void)
 }
 #endif
 
-void f_Disp()
+void f_Disp(void)
 {
 	unsigned  int i,temp;
-	static unsigned char DispChange = 0;
 	static unsigned int temp1;
 		for(i = 0;i<10;i++)
 			MchInf.Dispbuffer[i] = 0x00;
 	
-//		DispChange++;
-//		if(DispChange <5)
-//			temp1 = MchInf.ADCActValue[0];
-//		else if(DispChange <10)
-//			temp1 = MchInf.ADCActValue[1];
-//		else
-//			DispChange = 0;
 
 		if((MchInf.WaterLevel &0x08) == 0x08)
 		{
